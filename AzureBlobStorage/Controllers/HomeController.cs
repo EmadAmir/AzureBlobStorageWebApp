@@ -1,21 +1,23 @@
 using AzureBlobStorage.Models;
+using AzureBlobStorage.Services;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace AzureBlobStorage.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController(IContainerService _containerService) : Controller
     {
-        private readonly ILogger<HomeController> _logger;
+        
 
-        public HomeController(ILogger<HomeController> logger)
+        public async Task<IActionResult> Index()
         {
-            _logger = logger;
-        }
+            List<ContainerAndBlob> containerAndBlobs = await _containerService.GetAllContainerAndBlob();
 
-        public IActionResult Index()
-        {
-            return View();
+            string accountName = containerAndBlobs.FirstOrDefault()?.AccountName ?? "Unknown Account";
+
+            ViewBag.AccountName = accountName;
+
+            return View(containerAndBlobs);
         }
 
         public IActionResult Privacy()

@@ -1,8 +1,29 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
-}
+﻿@model List<ContainerAndBlob>
 
 <div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+
+    <h2>Account : @ViewBag.AccountName</h2>
+
 </div>
+
+    @foreach (var containerAndBlob in Model)
+    {
+        @foreach(var container in containerAndBlob.Container)
+        {
+        @* <ul class="list-group pt-4">
+            <li class="list-group-item"> *@
+                <div class="display-container">
+                    <h4>Container Name: @container.Name</h4>
+                    <ul class="list-group">
+                         @foreach (var blob in container.Blobs)
+                         {
+                           <li class="list-group-item">@blob.BlobName</li>
+                         }
+                    </ul>
+                  </div>
+        @*     </li>
+        </ul> *@
+        }
+    }
+    
+

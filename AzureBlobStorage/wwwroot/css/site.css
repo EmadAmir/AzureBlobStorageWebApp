@@ -20,3 +20,23 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+.list-group-item {
+    border:none !important;
+}
+
+.list-group {
+    padding-left: 2rem !important;
+    margin-bottom: 1rem !important;
+}
+
+li.list-group-item {
+    display: list-item !important;
+}
+
+.display-container {
+    padding: 10px;
+    position: relative;
+    top: 50px;
+    margin: 10px;
+}
