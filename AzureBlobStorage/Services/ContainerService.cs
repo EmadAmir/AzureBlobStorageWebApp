@@ -2,6 +2,7 @@
 using Azure.Storage.Blobs;
 using Azure.Storage.Blobs.Models;
 using AzureBlobStorage.Models;
+using AzureBlobStorage.ViewModel;
 
 namespace AzureBlobStorage.Services
 {
@@ -34,9 +35,9 @@ namespace AzureBlobStorage.Services
             return containerList;
         }
 
-        public async Task<List<ContainerAndBlob>> GetAllContainerAndBlob()
+        public async Task<List<ContainerAndBlobViewModel>> GetAllContainerAndBlob()
         {
-            List<ContainerAndBlob> containerAndBlobs = new List<ContainerAndBlob>();
+            List<ContainerAndBlobViewModel> containerAndBlobs = new List<ContainerAndBlobViewModel>();
 
             //ContainerAndBlob containerAndBlob= new ContainerAndBlob();
             //containerAndBlob.AccountName = _blobService.AccountName;
@@ -45,7 +46,7 @@ namespace AzureBlobStorage.Services
             {
                 BlobContainerClient blobContainerClient = _blobService.GetBlobContainerClient(blobContainerItem.Name);
 
-                ContainerAndBlob containerAndBlob = new ContainerAndBlob
+                ContainerAndBlobViewModel containerAndBlob = new ContainerAndBlobViewModel
                 {
                     AccountName = _blobService.AccountName,
                     Container = new List<Container>()
@@ -59,10 +60,20 @@ namespace AzureBlobStorage.Services
 
                 await foreach (BlobItem blobItem in blobContainerClient.GetBlobsAsync())
                 {
+                    var blobClient = blobContainerClient.GetBlobClient(blobItem.Name);
+                    BlobProperties blobProperties = await blobClient.GetPropertiesAsync();
+
+                    string title = blobProperties.Metadata.ContainsKey("title") ? blobProperties.Metadata["title"] : null;
+
+                    string comment = blobProperties.Metadata.TryGetValue("Comment", out string? value) ? value : null;
+
                     container.Blobs.Add(new Blob
                     {
                         BlobName = blobItem.Name,
+                        Title = title,
+                        Comment = comment
                     });
+
                 }
 
                 containerAndBlob.Container.Add(container);

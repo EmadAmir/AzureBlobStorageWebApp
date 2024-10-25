@@ -1,4 +1,5 @@
-﻿@model List<ContainerAndBlob>
+﻿@using AzureBlobStorage.ViewModel
+@model List<ContainerAndBlobViewModel>
 
 <div class="text-center">
 
@@ -6,24 +7,40 @@
 
 </div>
 
-    @foreach (var containerAndBlob in Model)
+@foreach (var containerAndBlob in Model)
+{
+    @foreach (var container in containerAndBlob.Container)
     {
-        @foreach(var container in containerAndBlob.Container)
-        {
-        @* <ul class="list-group pt-4">
-            <li class="list-group-item"> *@
-                <div class="display-container">
-                    <h4>Container Name: @container.Name</h4>
-                    <ul class="list-group">
-                         @foreach (var blob in container.Blobs)
-                         {
-                           <li class="list-group-item">@blob.BlobName</li>
-                         }
-                    </ul>
-                  </div>
-        @*     </li>
-        </ul> *@
-        }
+        <div class="display-container">
+            <h4>Container Name: @container.Name</h4>
+            <ul class="list-group">
+                @foreach (var blob in container.Blobs)
+                {
+                    @if (!string.IsNullOrEmpty(blob.Title))
+                    {
+                        <li class="list-group-item">
+                            @blob.BlobName
+                            <ul class="pt-2">
+                                <li style="list-style-type:none; font-style:italic;">
+                                    Title: @blob.Title
+                                </li>
+                                <li style="list-style-type:none; font-style:italic; ">
+                                    Comment: @blob.Comment
+                                </li>
+                            </ul>
+                        </li>
+                    }
+                    else
+                    {
+                        <li class="list-group-item">
+                            @blob.BlobName
+                        </li>
+                    }
+                }
+            </ul>
+        </div>
     }
+}
+
     
 

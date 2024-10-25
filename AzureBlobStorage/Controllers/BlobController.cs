@@ -1,4 +1,5 @@
-﻿using AzureBlobStorage.Services;
+﻿using AzureBlobStorage.Models;
+using AzureBlobStorage.Services;
 using Microsoft.AspNetCore.Mvc;
 
 namespace AzureBlobStorage.Controllers
@@ -21,14 +22,14 @@ namespace AzureBlobStorage.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddFile(IFormFile file, string containerName) 
+        public async Task<IActionResult> AddFile(IFormFile file,Blob blob, string containerName) 
         { 
             if(file == null || file.Length < 1) return View();
 
             //original filename = abc_img.png
             //new filename = abc_img_guidhere.png
             var fileName = Path.GetFileNameWithoutExtension(file.FileName)+"_"+Guid.NewGuid()+ Path.GetExtension(file.FileName);
-            var result = await _blobService.UploadBlob(fileName, file, containerName);
+            var result = await _blobService.UploadBlob(fileName, file, containerName,blob);
 
             if(result)
                 return RedirectToAction("Index","Container");

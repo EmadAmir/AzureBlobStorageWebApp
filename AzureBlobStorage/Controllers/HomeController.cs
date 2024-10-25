@@ -1,17 +1,18 @@
 using AzureBlobStorage.Models;
 using AzureBlobStorage.Services;
+using AzureBlobStorage.ViewModel;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
 namespace AzureBlobStorage.Controllers
 {
-    public class HomeController(IContainerService _containerService) : Controller
+    public class HomeController(IContainerService _containerService, IBlobService _blobService) : Controller
     {
         
 
         public async Task<IActionResult> Index()
         {
-            List<ContainerAndBlob> containerAndBlobs = await _containerService.GetAllContainerAndBlob();
+            List<ContainerAndBlobViewModel> containerAndBlobs = await _containerService.GetAllContainerAndBlob();
 
             string accountName = containerAndBlobs.FirstOrDefault()?.AccountName ?? "Unknown Account";
 
@@ -20,9 +21,9 @@ namespace AzureBlobStorage.Controllers
             return View(containerAndBlobs);
         }
 
-        public IActionResult Privacy()
+        public async Task<IActionResult> Images()
         {
-            return View();
+            return View(await _blobService.GetAllBlobsWithUri("azstorageaccounteamir-images"));
         }
 
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
